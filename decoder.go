@@ -29,7 +29,7 @@ func newDecoder(decipher *rc4.Cipher) *decoder {
 	}
 }
 
-func (d *decoder) decode(in []byte, crypt bool) (CSID, proto.Message, error)  {
+func (d *decoder) decode(in []byte, crypt bool) (CSID, proto.Message, error) {
 	payload := in
 	if crypt {
 		payload = make([]byte, len(in))

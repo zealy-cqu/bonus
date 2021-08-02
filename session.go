@@ -26,6 +26,6 @@ func newSession(d *dialer) (*session, error) {
 
 	return &session{
 		parser: p,
-		Conn: c,
+		Conn:   c,
 	}, nil
 }

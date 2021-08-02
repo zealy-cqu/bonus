@@ -12,19 +12,18 @@ var enEntry = encodeEntry{
 
 type encoder struct {
 	encipher *rc4.Cipher
-	enEntry encodeEntry
+	enEntry  encodeEntry
 }
 
-func newEncoder(decipher *rc4.Cipher) *encoder  {
+func newEncoder(decipher *rc4.Cipher) *encoder {
 	return &encoder{
 		encipher: decipher,
-		enEntry: enEntry,
+		enEntry:  enEntry,
 	}
 }
 
 type encodeFn func(msg proto.Message) ([]byte, error)
 type encodeEntry map[CSID]encodeFn
-
 
 func (e *encoder) encode(msgID CSID, msg proto.Message, crypt bool) ([]byte, error) {
 	data, err := e.enEntry[msgID](msg)

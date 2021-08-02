@@ -12,8 +12,8 @@ import (
 const pkgLen = 2
 
 type parser struct {
-	dec *decoder
-	enc *encoder
+	dec  *decoder
+	enc  *encoder
 	conn net.Conn
 }
 
@@ -25,7 +25,7 @@ func newParser(conn net.Conn) (*parser, error) {
 
 	fmt.Printf("remote addr: %v\n", conn.RemoteAddr())
 	_, msg, err := ps.read(false)
-	if err !=nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -47,8 +47,7 @@ func newParser(conn net.Conn) (*parser, error) {
 	return ps, nil
 }
 
-
-func (p *parser) read(crypt bool) (CSID, proto.Message, error)  {
+func (p *parser) read(crypt bool) (CSID, proto.Message, error) {
 	fmt.Printf("Before start parser.read.\n")
 	lenb := make([]byte, pkgLen)
 	if _, err := io.ReadFull(p.conn, lenb); err != nil {
@@ -82,4 +81,3 @@ func (p *parser) write(msgID CSID, msg proto.Message, crypt bool) error {
 	}
 	return nil
 }
-

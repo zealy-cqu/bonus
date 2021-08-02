@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBonus(t *testing.T)  {
+func TestBonus(t *testing.T) {
 	b, err := New("peerID: testID", "ethAdrr: testEthAdrr")
 	if err != nil {
 		t.Errorf("Failed to create new bonus. error: %v\n", err)
@@ -14,5 +14,5 @@ func TestBonus(t *testing.T)  {
 	_ = b
 	fmt.Printf("Successful to start bonus: %#+v\n", b)
 	closeCh := make(chan struct{})
-	<- closeCh
+	<-closeCh
 }

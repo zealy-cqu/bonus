@@ -7,14 +7,14 @@ import (
 )
 
 type Bonus struct {
-	peerID string
+	peerID  string
 	ethAdrr string
 
 	closeCh closeCh
-	wg *sync.WaitGroup
+	wg      *sync.WaitGroup
 
-	hbWriteCh writeCh
-	hbReadCh readCh
+	hbWriteCh    writeCh
+	hbReadCh     readCh
 	activeBeater *heartbeater
 	//ticker *time.Ticker
 }
@@ -33,14 +33,14 @@ func New(peerID, ethAdrr string) (*Bonus, error) {
 	hb := newHeartbeater(activeSession, hbWriteCh, hbReadCh)
 
 	b := &Bonus{
-		peerID: peerID,
+		peerID:  peerID,
 		ethAdrr: ethAdrr,
 
 		closeCh: make(chan struct{}),
-		wg: wg,
+		wg:      wg,
 
-		hbWriteCh: hbWriteCh,
-		hbReadCh: hbReadCh,
+		hbWriteCh:    hbWriteCh,
+		hbReadCh:     hbReadCh,
 		activeBeater: hb,
 		//ticker: time.NewTicker(time.Second * 15),
 	}
@@ -60,21 +60,21 @@ func (b *Bonus) serveHeartbeater() {
 	defer ticker.Stop()
 	for {
 		select {
-		case <- b.closeCh:
+		case <-b.closeCh:
 			return
-		case readMsg := <- b.hbReadCh:
+		case readMsg := <-b.hbReadCh:
 			if readMsg.err != nil {
-			fmt.Printf("heartbeater received error: %v\n", readMsg.err)
-			hbErr = readMsg.err
-			break
+				fmt.Printf("heartbeater received error: %v\n", readMsg.err)
+				hbErr = readMsg.err
+				break
 			}
 			fmt.Printf("heartbeater received CSID %v message: %v\n", readMsg.msg.id, readMsg.msg.msg)
-		case t := <- ticker.C:
+		case t := <-ticker.C:
 			fmt.Println("Current time: ", t)
 			msg := &message{
 				id: CSID_ID_Heartbeat,
 				msg: &Heartbeat{
-					Peer:b.peerID,
+					Peer:    b.peerID,
 					EthAddr: b.ethAdrr,
 				},
 			}
@@ -82,13 +82,12 @@ func (b *Bonus) serveHeartbeater() {
 			errCh := make(chan error)
 
 			writeMsg := &writeMsg{
-				msg: msg,
+				msg:   msg,
 				errCh: errCh,
-
 			}
-		 	b.hbWriteCh <- writeMsg
-		 	err := <- errCh
-		 	if err != nil {
+			b.hbWriteCh <- writeMsg
+			err := <-errCh
+			if err != nil {
 				fmt.Printf("heartbeater write error: %v\n", err)
 				hbErr = err
 				break
@@ -117,7 +116,7 @@ func (b *Bonus) serveHeartbeater() {
 }
 
 // Close close all bonus services in top to down order.
-func (b *Bonus) Close() error  {
+func (b *Bonus) Close() error {
 	close(b.closeCh)
 	b.wg.Wait()
 	return b.activeBeater.close()

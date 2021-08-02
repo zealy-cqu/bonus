@@ -8,7 +8,7 @@ func TestDialerPing(t *testing.T) {
 	t.Logf("pongIPMp len: %v\n", len(d.pongIPMp))
 }
 
-func TestDoPing(t *testing.T)  {
+func TestDoPing(t *testing.T) {
 	recv := pongIPMp{}
 	gg := "www.google.com"
 	bd := "www.baidu.com"
@@ -23,7 +23,6 @@ func TestDoPing(t *testing.T)  {
 	if err != nil {
 		t.Errorf("ERROR: %v\n", err)
 	}
-
 
 	err = ping_(gg, recv)
 	if err != nil {

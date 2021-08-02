@@ -5,12 +5,12 @@ import (
 )
 
 type message struct {
-	id CSID
+	id  CSID
 	msg proto.Message
 }
 
 type writeMsg struct {
-	msg *message
+	msg   *message
 	errCh chan error
 }
 

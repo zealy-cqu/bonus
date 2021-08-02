@@ -10,12 +10,10 @@ import (
 	"time"
 )
 
-
-
 var addrs = ipPortMp{
 	"192.168.101.134": "9527",
-	"202.182.98.210": "1398",
-	"127.0.0.1": "44199",
+	"202.182.98.210":  "1398",
+	"127.0.0.1":       "44199",
 }
 
 type ipPortMp map[string]string
@@ -25,35 +23,34 @@ type pongIPMp map[int]string
 type notPongIPMp map[int]string
 
 type pongRes struct {
-	ip string
+	ip  string
 	err error
 }
 
 type dialer struct {
-	pingTimeout time.Duration
-	dialTimeout time.Duration
+	pingTimeout   time.Duration
+	dialTimeout   time.Duration
 	retryInterval time.Duration
 
-	targets ipPortMp
-	pingIPCh chan string
+	targets   ipPortMp
+	pingIPCh  chan string
 	pongResCh chan *pongRes
-	pongIPMp pongIPMp
+	pongIPMp  pongIPMp
 
 	pingwg *sync.WaitGroup
 	pongwg *sync.WaitGroup
-
 }
 
 func newDialer() *dialer {
 	return &dialer{
-		pingTimeout: time.Second * 10,
-		dialTimeout: time.Second * 10,
+		pingTimeout:   time.Second * 10,
+		dialTimeout:   time.Second * 10,
 		retryInterval: time.Second * 10,
 
-		targets: addrs,
-		pingIPCh: make(chan string, len(addrs)),
+		targets:   addrs,
+		pingIPCh:  make(chan string, len(addrs)),
 		pongResCh: make(chan *pongRes, len(addrs)),
-		pongIPMp: make(pongIPMp, len(addrs)),
+		pongIPMp:  make(pongIPMp, len(addrs)),
 
 		pingwg: &sync.WaitGroup{},
 		pongwg: &sync.WaitGroup{},
@@ -88,7 +85,7 @@ func (d *dialer) dial() (net.Conn, error) {
 	rand.Seed(86)
 
 	n := rand.Intn(len(d.pongIPMp))
-	conn, err := net.DialTimeout("tcp", d.pongIPMp[n],  d.dialTimeout)
+	conn, err := net.DialTimeout("tcp", d.pongIPMp[n], d.dialTimeout)
 	if err != nil {
 		fmt.Printf("Failed to dial %v \n", d.pongIPMp[n])
 		delete(d.pongIPMp, n)
@@ -141,7 +138,6 @@ func (d *dialer) ping() {
 		//close(d.pongResCh)
 	}()
 
-
 	// receive subroutine
 	go func() {
 		d.pongwg.Add(1)
@@ -166,11 +162,9 @@ func (d *dialer) ping() {
 	d.pongwg.Wait()
 }
 
-
 func pings(ips ipPortMp) (pongIPMp, notPongIPMp) {
 	return nil, nil
 }
-
 
 // todo: use concurrent map
 func ping_(ip string, recv pongIPMp) error {
